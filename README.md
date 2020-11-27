@@ -5,7 +5,7 @@ practical of product and category
 https://docs.google.com/document/d/1d_g-otVveDvoQJ2P1_6JAjTpPYWlYbuW2-l1eSFSvbY/edit?usp=sharing
 
 # Steps
-git clone <https link of git repo>
+git clone https://github.com/shivanikakrecha/Practical.git
 
 # Create Virtual Environment
 virtualenv -p python3 <venv_name>
