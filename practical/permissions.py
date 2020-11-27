@@ -6,6 +6,8 @@ permission_list = ["list", "create", "partial_update", 'destroy']
 
 
 class ProductPermission(permissions.BasePermission):
+    # Handle permission for products.
+
     def has_permission(self, request, view):
         if view.action in permission_list:
             return request.user.is_owner
@@ -18,7 +20,8 @@ class ProductPermission(permissions.BasePermission):
         return True
 
 
-class SubPermission(permissions.BasePermission):
+class CategoryPermission(permissions.BasePermission):
+    # Handle permission for category.
     def has_permission(self, request, view):
         if view.action in permission_list:
             return request.user.is_owner

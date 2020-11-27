@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from acqu_practical import authentication
 from django.utils.translation import gettext as _
-from .permissions import ProductPermission, SubPermission
+from .permissions import ProductPermission, CategoryPermission
 from rest_framework import filters as rest_filters
 from rest_framework.filters import OrderingFilter
 from django_filters import rest_framework as filters
@@ -33,6 +33,15 @@ class UsersViewSets(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def login(self, request, pk=None):
+        """
+        API to login
+        ```
+        {
+            "email": "string",(Required)
+            "password": "string"(Required)
+        }
+        ```
+        """
         email = request.data.get("email").lower()
         password = request.data.get("password")
         is_owner = request.data.get("is_owner", False)
@@ -43,12 +52,63 @@ class UsersViewSets(viewsets.ModelViewSet):
         if not (username and password):
             content = {"detail": _("Please provide required parameter.")}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
         return authentication.authenticate_user(
             self, request, username, password, is_owner
         )
 
 
 class ProductViewSets(viewsets.ModelViewSet):
+    """
+    create:
+    API to create new product
+    ```
+    {
+        "name": "string",(optional)
+        "product_code": "string"(optional)
+        "price": "string",(optional)
+        "category": "FK",(optional)
+        "manufacture_date": "date time",(Required can not be blank/null, format [2020-11-27T13:53:53Z])
+        "expiry_date": "date time",(Required can not be blank/null, format [2020-11-27T13:53:53Z])
+        "owner": "Fk",(Required can not be null/blank)
+        "status": "string",(optional)
+    }
+    ```
+
+    partial_update:
+    API to update Product details, ID of pharmacy need to be pass
+
+    list:
+    API to list all the Products
+    * API to Sort product by fields
+    ```
+    To sort Product by name it in ordering
+    Sorting fields: 'name'
+
+    e.g : ascending by name > ordering=name
+         descending by name > ordering=-name
+    :except:
+    ```
+
+    retrieve:
+    API to view detail of Products
+    ```
+    > To view detail of pharmacy pass pharmacy id
+    e.g. : product/{product_id}/
+    ```
+
+    destroy:
+    API to archive product
+    ```
+    > pass pharmacy id to archive it
+    ```
+
+    active_pharmacy:
+    API to reactivate product
+    ```
+    > pass product id to reactivate it
+    ```
+    """
     queryset = Product.objects.all()
     serializer_class = Productlistserializer
     permission_classes = (ProductPermission,)
@@ -78,6 +138,18 @@ class ProductViewSets(viewsets.ModelViewSet):
             return Productlistserializer
 
     def partial_update(self, request, *args, **kwargs):
+        """
+        ```
+        This method has aditional logic for product price.
+
+        Ex:- Product1 has price is 100. 
+        owner wants to change the price then he can only add or subtract by
+        variant of 10%.
+
+        If system can not found specific calculation then it will raise error
+        of enter the valid variant amount.
+        ```
+        """
         partial = kwargs.pop('partial', True)
         instance = self.get_object()
         updated_price = int(request.data.get('price', 0))
@@ -103,7 +175,7 @@ class ProductViewSets(viewsets.ModelViewSet):
 class CategoryViewSets(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = Subserializer
-    permission_classes = (SubPermission,)
+    permission_classes = (CategoryPermission,)
 
     filter_backends = (
         filters.DjangoFilterBackend,
