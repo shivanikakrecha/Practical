@@ -5,6 +5,11 @@ practical of product and category
 Python 3.5.2
 Django 2.2.17
 
+# Superuser Login Credentials :- 
+Username:- admin
+Password:- admin
+
+
 # Please follow below link for more details. 
 https://docs.google.com/document/d/1d_g-otVveDvoQJ2P1_6JAjTpPYWlYbuW2-l1eSFSvbY/edit?usp=sharing
 
