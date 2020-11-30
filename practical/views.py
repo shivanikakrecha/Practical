@@ -76,7 +76,7 @@ class ProductViewSets(viewsets.ModelViewSet):
     ```
 
     partial_update:
-    API to update Product details, ID of pharmacy need to be pass
+    API to update Product details, ID of product need to be pass
 
     list:
     API to list all the Products
@@ -93,20 +93,15 @@ class ProductViewSets(viewsets.ModelViewSet):
     retrieve:
     API to view detail of Products
     ```
-    > To view detail of pharmacy pass pharmacy id
+    > To view detail of product pass product id
     e.g. : product/{product_id}/
     ```
 
     destroy:
     API to archive product
     ```
-    > pass pharmacy id to archive it
+    > pass product id to archive it
     ```
-
-    active_pharmacy:
-    API to reactivate product
-    ```
-    > pass product id to reactivate it
     ```
     """
     queryset = Product.objects.all()
